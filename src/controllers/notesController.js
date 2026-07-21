@@ -12,7 +12,9 @@ export const getAllNotes = async (req, res) => {
     sortOrder = 'asc',
   } = req.query;
 
-  const skip = (page - 1) * perPage;
+  const pageNum = Number(page);
+  const perPageNum = Number(perPage);
+  const skip = (pageNum - 1) * perPageNum;
 
   const notesQuery = Note.find();
 
@@ -35,15 +37,15 @@ export const getAllNotes = async (req, res) => {
     notesQuery.clone().countDocuments(),
     notesQuery
       .skip(skip)
-      .limit(perPage)
+      .limit(perPageNum)
       .sort({ [sortBy]: sortOrder }),
   ]);
 
-  const totalPages = Math.ceil(totalNotes / perPage);
+  const totalPages = Math.ceil(totalNotes / perPageNum);
 
   res.status(200).json({
-    page,
-    perPage,
+    page: pageNum,
+    perPage: perPageNum,
     totalNotes,
     totalPages,
     notes,

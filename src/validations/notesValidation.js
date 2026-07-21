@@ -8,6 +8,8 @@ export const getAllNotesSchema = {
     tag: Joi.string().valid('Done', 'Undone').optional(),
     search: Joi.string().trim().allow(''),
     rate: Joi.number().positive(),
+    sortBy: Joi.string().valid('_id', 'rate', 'title').default('_id'),
+    sortOrder: Joi.string().valid('asc', 'desc').default('asc'),
   }),
 };
 

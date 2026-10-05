@@ -27,6 +27,19 @@ export const registerUser = async (req, res) => {
   res.status(201).json(newUser);
 };
 
+export const checkSession = async (req, res) => {
+  const { sessionId, accessToken } = req.cookies;
+
+  if (!sessionId || !accessToken) {
+    return res.status(200).json({ success: false });
+  }
+
+  const session = await Session.findOne({ _id: sessionId, accessToken });
+  const isValid = session && session.accessTokenValidUntil > new Date();
+
+  res.status(200).json({ success: Boolean(isValid) });
+};
+
 export const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 

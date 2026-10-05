@@ -7,6 +7,7 @@ import {
   registerUser,
   requestResetEmail,
   resetPassword,
+  checkSession,
 } from '../controllers/authController.js';
 import {
   loginUserSchema,
@@ -21,6 +22,7 @@ router.post('/auth/register', celebrate(registerUserSchema), registerUser);
 router.post('/auth/login', celebrate(loginUserSchema), loginUser);
 router.post('/auth/logout', logoutUser);
 router.post('/auth/refresh', refreshUserSession);
+router.get('/auth/session', checkSession);
 router.post(
   '/auth/request-reset-email',
   celebrate(requestResetEmailSchema),

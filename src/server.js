@@ -8,6 +8,8 @@ import { errorHandler } from './middleware/errorHandler.js';
 import notesRoutes from './routes/notesRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import { errors } from 'celebrate';
+import userRoutes from './routes/userRoutes.js';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
 const app = express();
@@ -22,10 +24,11 @@ app.use(
     credentials: true,
   }),
 );
-
-app.use('/auth', authRoutes);
+app.use(cookieParser());
 
 app.use(notesRoutes);
+app.use(authRoutes);
+app.use(userRoutes);
 
 app.use(notFoundHandler);
 

@@ -4,6 +4,22 @@ import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
+export const getCurrentUser = async (req, res) => {
+  res.status(200).json(req.user);
+};
+
+export const updateCurrentUser = async (req, res) => {
+  const { username } = req.body;
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    { username },
+    { returnDocument: 'after' },
+  );
+
+  res.status(200).json(updatedUser);
+};
+
 export const updateUserAvatar = async (req, res) => {
   const { file, user } = req;
   if (!file) {

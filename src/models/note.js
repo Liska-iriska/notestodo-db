@@ -2,6 +2,11 @@ import { model, Schema } from 'mongoose';
 
 const noteSchema = new Schema(
   {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -29,6 +34,12 @@ const noteSchema = new Schema(
   },
 );
 
-noteSchema.index({ tag: 1, rate: 1, title: 'text', content: 'text' });
+noteSchema.index({
+  tag: 1,
+  rate: 1,
+  title: 'text',
+  content: 'text',
+  userId: 1,
+});
 
 export const Note = model('Note', noteSchema);

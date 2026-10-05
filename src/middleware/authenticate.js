@@ -1,24 +1,32 @@
-import jwt from 'jsonwebtoken';
+import createHttpError from 'http-errors';
+import { Session } from '../models/session.js';
+import { User } from '../models/user.js';
 
-export const authenticate = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+export const authenticate = async (req, res, next) => {
+  const { sessionId, accessToken } = req.cookies;
 
-  if (!authHeader) {
-    return res.status(401).json({ message: 'Authorization header missing' });
+  if (!sessionId || !accessToken) {
+    throw createHttpError(401, 'Missing session credentials');
   }
 
-  const [bearer, token] = authHeader.split(' ');
-
-  if (bearer !== 'Bearer' || !token) {
-    return res.status(401).json({ message: 'Invalid token format' });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ message: 'Invalid or expired token' });
-    }
-
-    req.user = decoded;
-    next();
+  const session = await Session.findOne({
+    _id: sessionId,
+    accessToken,
   });
+  if (!session) {
+    throw createHttpError(401, 'Session not found');
+  }
+
+  const isAccessTokenExpired = session.accessTokenValidUntil < new Date();
+  if (isAccessTokenExpired) {
+    throw createHttpError(401, 'Access token expired');
+  }
+
+  const user = await User.findById(session.userId);
+  if (!user) {
+    throw createHttpError(401, 'User not found');
+  }
+
+  req.user = user;
+  next();
 };

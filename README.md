@@ -4,7 +4,7 @@ REST API for NOTEStodo application.
 
 ## 🚀 Live
 
-https://notestodo-db.onrender.com
+
 
 ## 🛠️ Tech Stack
 
